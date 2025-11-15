@@ -27,8 +27,8 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm install
-        working-directory: ./frontend
+        working-directory: ./frontend/vite-project
 
       - name: Build React frontend
         run: npm run build
-        working-directory: ./frontend
+        working-directory: ./frontend/vite-project
