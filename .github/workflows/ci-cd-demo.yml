@@ -18,7 +18,7 @@ jobs:
           php-version: '8.1'
 
       - name: Run PHP test
-        run: php backend/test.php
+        run: php backend/*.php
 
       - name: Set up Node
         uses: actions/setup-node@v3
