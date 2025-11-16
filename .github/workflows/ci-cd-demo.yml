@@ -30,7 +30,7 @@ jobs:
         working-directory: ./frontend/vite-project
 
       - name: Run React frontend tests
-        run: npm test
+        run: npx jest
         working-directory: ./frontend/vite-project
 
       - name: Build React frontend
