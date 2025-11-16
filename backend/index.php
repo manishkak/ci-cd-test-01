@@ -1,3 +1,3 @@
 <?php
-    echo "Hello from PHP backend- updated!";
+    echo "Hello from DEV FOLDER — updated!";
 ?>
