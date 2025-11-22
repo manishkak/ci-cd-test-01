@@ -25,11 +25,7 @@ jobs:
       # -----------------------
       - name: Install Composer dependencies
         working-directory: ./backend
-        run: |
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
-          php -r "unlink('composer-setup.php');"
-          php composer.phar install --no-interaction
+        run: composer install --no-interaction
 
       - name: Run PHPUnit tests
         working-directory: ./backend
