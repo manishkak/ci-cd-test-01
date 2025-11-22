@@ -17,8 +17,23 @@ jobs:
         with:
           php-version: '8.1'
 
-      - name: Run PHP test
-        run: php backend/*.php
+      # - name: Run PHP test
+      #   run: php backend/*.php
+
+      # -----------------------
+      # BACKEND (PHP) TESTS
+      # -----------------------
+      - name: Install Composer dependencies
+        working-directory: ./backend
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+          php composer.phar install --no-interaction
+
+      - name: Run PHPUnit tests
+        working-directory: ./backend
+        run: php vendor/bin/phpunit
 
       - name: Set up Node
         uses: actions/setup-node@v3
