@@ -1,0 +1,17 @@
+{
+    "name": "manis/backend",
+    "autoload": {
+        "psr-4": {
+            "Manis\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Manish Kak",
+            "email": "manish.kak@rediffmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}
