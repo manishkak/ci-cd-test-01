@@ -30,7 +30,7 @@ jobs:
       - name: Run PHPUnit tests
         working-directory: ./backend
         run: php vendor/bin/phpunit
-        continue-on-error: true
+        continue-on-error: true # meaning the deploy workflow will continue even when there is a failing test case like in SampleTest.php
 
       - name: Set up Node
         uses: actions/setup-node@v3
