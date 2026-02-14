@@ -1,3 +1,3 @@
 <?php
-    echo "Hello from DEV FOLDER - NEW! 021426";
+    echo "Hello from DEV FOLDER - Absolute! 021426";
 ?>
