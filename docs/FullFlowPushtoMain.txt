@@ -1,0 +1,74 @@
+Full Flow- Push to 'Main'
+
+Let’s go **step by step** so the flow is crystal clear.
+
+---
+
+### **1️⃣ Change the code locally**
+
+* Open `index.php` (or any other file in your repo) and make your changes.
+* Example:
+
+```php
+echo "Hello, Manish — updated again!";
+```
+
+---
+
+### **2️⃣ Commit and push**
+
+* Stage your changes:
+
+```bash
+git add index.php
+```
+
+* Commit:
+
+```bash
+git commit -m "Update index.php content"
+```
+
+* Push to your GitHub branch (the branch your pipeline is watching):
+
+```bash
+git push origin main
+```
+
+> Your pipeline trigger is set to `main` in the YAML (`trigger: - main`), so **pushing to main automatically starts the pipeline**.
+
+---
+
+### **3️⃣ Pipeline runs automatically** (Not in my case cos we set it up to mimic real Prod env. where deploy pipeline only runs on manual triggers- got to point 5 below)
+
+Here’s what Azure DevOps will do automatically:
+
+1. Detect the push to `main`.
+2. Use your YAML to:
+
+   * Build a new Docker image with the updated PHP code.
+   * Tag the image.
+   * Push the image to **Docker Hub**.
+   * Trigger a deployment to your Azure Web App.
+3. Azure Web App pulls the **latest Docker image** and updates your container.
+
+---
+
+### **4️⃣ Wait for deployment**
+
+* Deployment usually takes 1–2 minutes.
+* Once it’s done, refresh your **Web App URL** (`https://mkphpapp.azurewebsites.net/`) and you’ll see the new content.
+
+---
+
+### **5️⃣ Optional manual triggers** (THIS IS HOW I SET IT UP, COS THIS MIMICS THE PROD ENV., SO THIS DEPLOY ONLY WORKS ON MANUAL RUN OF PIPELINE)
+
+* If you don’t want to push to GitHub, you can also **manually run the pipeline** in Azure DevOps:
+
+  * Go to **Pipelines → phpapp pipeline → Run pipeline**.
+  * This will rebuild and deploy the latest code from your branch.
+
+---
+
+💡 **Key takeaway:** You don’t manually push Docker images anymore; the pipeline handles building, tagging, pushing, and deploying — that’s the CI/CD magic.
+

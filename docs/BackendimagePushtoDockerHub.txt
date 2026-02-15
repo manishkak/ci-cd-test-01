@@ -1,0 +1,146 @@
+Backend image Push to Docker Hub
+
+Here’s **exactly what’s next**, in clean step-by-step points so we stay organized.
+We have already completed **Step 1: Build & run backend Docker locally**.
+
+---
+
+# ✅ **NEXT STEPS FOR DOCKER + AZURE DEPLOYMENT**
+
+### **2️⃣ Create a Docker Hub repository**
+
+We need a place to push your backend Docker image so Azure can pull it.
+
+**Steps:**
+
+1. Go to [https://hub.docker.com/](https://hub.docker.com/) - uname: manishkak, pass: Tenders…
+2. Create a **new public repo** → name it:
+   **backend-app**
+3. No files needed — empty repo is fine.
+
+---
+
+-> Quick check before running the Docker image commands below-
+Do a pwd and make sure you’re at: /c/Users/manis/projects/ci-cd-test-01/backend
+On Git Bash on VS Code, run: docker run -p 8080:80 backend-app
+Go to docker desktop and make sure there is a running container pls go to localhost:8080 on the browser and this should show content from index.php file
+Open another Git Bash and run: docker ps, it should show info of the container running like:
+
+CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS              PORTS                  NAMES
+6fc5f1afdea1   backend-app   "docker-php-entrypoi…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp   brave_lamport
+
+Then go ahead and do the steps below:
+
+### **3️⃣ Tag your local Docker image for Docker Hub**
+
+Your image right now is named **backend-app:latest** (local only).
+
+We need to tag it for pushing:
+
+```
+docker tag backend-app:latest <your-dockerhub-username>/backend-app:latest
+```
+
+Example:
+
+```
+docker tag backend-app:latest manish010/backend-app:latest
+```
+
+-> After this run: docker images
+You should now see something like:
+REPOSITORY                    TAG       IMAGE ID       CREATED         SIZE
+backend-app                   latest    c965d401a679   3 days ago      548MB
+manishkak/backend-app         latest    c965d401a679   3 days ago      548MB
+
+Notice both entries have the same IMAGE ID → that confirms it's just a new tag.
+
+Also, Check in Docker Desktop
+
+Open Docker Desktop → Images tab
+You should now see two entries:
+backend-app:latest
+manish010/backend-app:latest
+
+Same size & same image ID.
+
+---
+
+### **4️⃣ Login to Docker Hub using CLI**
+
+You do this once on your machine:
+
+```
+docker login
+```
+
+Enter your Docker Hub username + password.
+
+---
+
+### **5️⃣ Push the image**
+
+Push your tagged image to Docker Hub:
+
+```
+docker push manishkak/backend-app:latest
+```
+
+This will upload your Docker image so Azure can use it.
+
+-> On Docker hub now you should be able to see your image with the tag- backend-app:latest
+Perfect — Docker image is now on Docker Hub, which means your backend is fully containerized and publicly pullable. (Do only till here and move to the next document. You can just read what comes next below)
+---
+
+### **6️⃣ Deploy backend container to Azure Web App (for Containers)**
+
+This is the part where your Docker container becomes an actual deployed backend.
+
+Steps (we will do one by one later):
+
+1. Go to Azure Portal
+2. Create a **Web App**
+3. Choose:
+
+   * **Publish: Docker container**
+   * **OS: Linux**
+4. In “Container Settings”, set:
+
+   * Registry: Docker Hub
+   * Image: `<username>/backend-app`
+   * Tag: `latest`
+5. Finish deployment
+6. Web App will auto-pull your image and run it
+7. You get a public URL like:
+   `https://backend-app.azurewebsites.net/`
+
+---
+
+### **7️⃣ Build + containerize frontend**
+
+After backend is deployed, we do the same for frontend:
+
+* Create Dockerfile for frontend
+* Build Docker image
+* Push to Docker Hub
+* Deploy to Azure Web App
+(NOT DONE YET)
+
+When we resume, the flow will be- Frontend steps (clean & standard)
+	1. npm run build → generate /dist
+	2. Multi-stage Dockerfile
+	3. Node → build
+	4. Nginx → serve
+	5. Build image
+	6. Push to Docker Hub
+	7. Deploy to separate Azure Web App
+	8. Connect frontend → backend via env var
+
+---
+
+### **8️⃣ Optional: Use GitHub Actions to auto-deploy Docker images on push**
+
+This comes later.
+Right now we deploy manually to learn.
+
+---

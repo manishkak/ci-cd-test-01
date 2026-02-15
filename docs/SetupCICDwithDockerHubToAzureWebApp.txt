@@ -1,0 +1,87 @@
+Set up CI/CD with Docker Hub → Azure Web App
+
+	• Let’s set up CI/CD with Docker Hub → Azure Web App. Here’s the plan in short steps:
+	Perfect. Let’s set up CI/CD with **Docker Hub → Azure Web App**. Here’s the plan in short steps:
+	
+	---
+	
+	### **1️⃣ Connect your GitHub repo to Azure Pipelines**
+	
+	* Go to [Azure DevOps](https://dev.azure.com/).
+	* Create a new project (or use your existing one).
+	* Go to **Pipelines → Create Pipeline**.
+	* Select **GitHub** as the source.
+	* Pick your repo (the one containing your backend `index.php` and Dockerfile).
+	
+	---
+	
+	### **2️⃣ Define a pipeline YAML**
+	
+	* We’ll create an `azure-pipelines.yml` in the root of your repo.
+	* Basic flow:
+	
+	```yaml
+	# azure-pipelines.yml
+	# Builds backend Docker image, pushes to Docker Hub, deploys to Azure Web App for Containers.
+	
+	trigger:
+	  branches:
+	    include:
+	      - main
+	
+	pool:
+	  vmImage: 'ubuntu-latest'
+	
+	variables:
+	  # customize these to match your settings
+	  dockerRepo: 'manishkak/backend-app'        # <dockerhub-username/repo>
+	  imageTag: 'latest'                         # we push latest + a build id tag below (optional)
+	  dockerRegistryServiceConnection: 'DockerHubConnection'   # create this in Project Settings -> Service connections
+	  azureSubscription: 'AzureServiceConnection'              # create this in Project Settings -> Service connections
+	  appName: 'mkphpapp'              # your Azure Web App name
+	
+	steps:
+	- checkout: self
+	  persistCredentials: true
+	
+	- task: Docker@2
+	  displayName: 'Build and push Docker image to Docker Hub'
+	  inputs:
+	    command: buildAndPush
+	    containerRegistry: '$(dockerRegistryServiceConnection)'
+	    repository: '$(dockerRepo)'
+	    dockerfile: 'backend/Dockerfile'
+	    tags: |
+	      $(imageTag)
+	      $(Build.BuildId)
+	
+	- task: AzureWebAppContainer@1
+	  displayName: 'Deploy image to Azure Web App (Container)'
+	  inputs:
+	    azureSubscription: '$(azureSubscription)'
+	    appName: '$(appName)'
+	    imageName: '$(dockerRepo):$(imageTag)'
+	```
+	
+	---
+	
+	### **3️⃣ Set up service connections**
+	
+	* **Docker Hub**: Go to Azure DevOps → Project Settings → Service Connections → New Service Connection → Docker Hub → DockerHubConnection
+	* **Azure**: Project Settings → Service Connections → New Service Connection → Azure Resource Manager → Service Connection Name-> AzureServiceConnection
+	
+	---
+	
+	### **4️⃣ Trigger pipeline**
+	
+	* Push a change to `main`.
+	* Azure Pipeline will:
+	
+	  1. Build Docker image from your repo.
+	  2. Push it to Docker Hub.
+	  3. Deploy it automatically to your Azure Web App.
+	
+	---
+	
+	💡 **Outcome:** Every push to `main` updates your backend on the public URL automatically.
+	(More in detail on the next document)

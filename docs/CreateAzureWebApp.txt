@@ -1,0 +1,145 @@
+Create Azure Web App
+
+Perfect — **Docker image is now on Docker Hub**, which means your backend is fully containerized and publicly pullable.
+Nice work. 🎉
+
+Now let’s continue with the **next steps** in the Docker → Azure pipeline. (Using Method #1- using the Azure CLI)
+
+Both Methods achieve the same result:
+✅ Create Web App
+✅ Choose Linux
+✅ Publish as Docker Container
+✅ Set container image = manish010/backend-app:latest
+✅ Azure pulls the image
+✅ You get a public URL
+
+---
+
+# ✅ **NEXT STEPS (where we go from here)**
+
+Now that your image is pushed to Docker Hub, here’s the roadmap:
+
+---
+
+## **5️⃣ Test pulling your image (optional but recommended)**
+
+Just to confirm everything is good, you can pull the image on *any* machine.
+
+Run this in VS Code terminal (Git Bash or PowerShell — both fine):
+
+```bash
+docker pull manish010/backend-app:latest
+```
+
+You should see it download without errors.
+
+---
+
+## **6️⃣ Create an Azure Web App for Containers**
+
+We will deploy this Docker image on Azure.
+
+### **Step A — Login to Azure**
+
+```bash
+az login
+```
+
+A browser window will open → log in.
+
+---
+
+### **Step B — Create a Resource Group**
+
+```bash
+az group create --name phpDockerRG --location eastus
+```
+
+---
+
+### **Step C — Create an App Service Plan**
+
+(Needed for the Web App to run containers)
+
+```bash
+az appservice plan create --name phpDockerPlan --resource-group phpDockerRG --is-linux --sku B1
+```
+
+---
+
+### **Step D — Create the Web App (Container)**
+
+```bash
+az webapp create \
+    --resource-group phpDockerRG \
+    --plan phpDockerPlan \
+    --name php-docker-backend-001 \
+    --deployment-container-image-name manish010/backend-app:latest
+```
+
+This creates a live URL like:
+
+```
+https://php-docker-backend-001.azurewebsites.net
+```
+
+---
+
+## **7️⃣ Configure Azure to auto-pull new Docker images on update**
+
+Azure does NOT automatically pull latest tags unless told.
+
+Run:
+
+```bash
+az webapp config container set \
+    --name php-docker-backend-001 \
+    --resource-group phpDockerRG \
+    --docker-custom-image-name manish010/backend-app:latest \
+    --docker-registry-server-url https://index.docker.io/v1/
+```
+
+---
+
+## **8️⃣ Restart the Web App**
+
+```bash
+az webapp restart \
+    --name php-docker-backend-001 \
+    --resource-group phpDockerRG
+```
+
+---
+
+# 🎯 **After this, your backend will be live on Azure!**
+
+You’ll open the Azure website link and see your PHP app running inside the Docker container in the cloud.
+
+---
+
+
+Method #2- Azure Portal method
+
+	• Open: https://portal.azure.com
+	• Click “Create a resource”
+	• Search for Web App and click on Web App for Containers
+	• So I did not have an Active Subscription, I created one- MK_AzSubs1, select that and the Plan and then click on Create
+	• Resource Group: phpapp-rg
+	• Instance Details: Name- mkphpapp  (.azurewebsites.net)
+	• Publish → choose Container
+	• OS → choose Linux
+	• Pricing Plan: Free F1
+	• Skip Database tab, Deployent tab: cont deploy Disabled
+	• Container tab: select Other container registries because your image is on Docker Hub (not ACR)
+		○ Image and tag → put manishkak/backend-app:latest
+	• Skip networking, monitor+secure  and Tag tabs to default values
+	• Click Create and then it says- Your deployment is complete.
+	• Now we have:
+		○ Subscription: MK_AzSubs1	Resource Group: phpapp-rg	Resource: mkphpapp
+			§ Resource: mkphpapp (which is a Web App for Containers)
+			§ https://portal.azure.com/#@manishkakrediffmail.onmicrosoft.com/resource/subscriptions/99aefb29-6975-4f05-9b23-91f909b29c83/resourceGroups/phpapp-rg/providers/Microsoft.Web/sites/mkphpapp/appServices
+	• On the mkphpapp Resouce page, click on the Default Domain: mkphpapp.azurewebsites.net
+		○ You should see your PHP app running, served from the Docker container you pushed to Docker Hub.
+		○ The same content from index.php file: Hello from DEV FOLDER — updated!
+	• The app is now live on Azure!
+	

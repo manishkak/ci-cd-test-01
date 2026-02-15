@@ -1,0 +1,74 @@
+NEW! Push Local PHP Repo to Docker Desktop
+
+What we DID do (100% done)
+Backend (PHP) ✅
+	• Created Dockerfile for backend repo
+	• Built Docker image locally
+	• Ran container in Docker Desktop
+	• Pushed image to Docker Hub
+	• Deployed backend container to Azure Web App
+	• Verified it via public Azure URL
+	• Wired CI pipeline (build → push → deploy)
+👉 Backend containerization + deployment = DONE
+	
+	• C:\Users\manis\projects\ci-cd-test-01\ - this is where all my project files are → Docker built an image from this repo.
+		○ this was cloned from GitHub- https://github.com/manishkak/ci-cd-test-01
+		○ Code lives in GitHub → cloned locally → Docker builds images from it → CI/CD automates this
+		○ .github/              → GitHub Actions workflows
+		○ backend/              → PHP app + PHPUnit + Dockerfile
+		○ frontend/             → Vite + React app
+		○ azure-pipelines.yml   → Azure DevOps pipeline
+	• Put the Dockerfile here as well- C:\Users\manis\projects\ci-cd-test-01\backend\Dockerfile
+		○ I did touch Dockerfile and copied the content from GPT. (this file does not have an extension)
+		○ Then inside /c/Users/manis/projects/ci-cd-test-01/backend, run:
+			§ docker build -t backend-app .	to Build the image
+			docker run -p 8080:80 backend-app	to Run the container
+		○ Open browser: http://localhost:8080 → you should see your PHP app
+			§ This should have content from the file C:\Users\manis\projects\ci-cd-test-01\backend\index.php
+	• On VS Code, I open two GitBash Terminals-
+		○ One at C:\Users\manis\projects\ci-cd-test-01\backend to run docker commands cos this is where the Dockerfile is.
+		○ Another one at C:\Users\manis\projects\ci-cd-test-01 to do all the git commands like status, add, commit, pull, push.
+	
+	• When you build and run the Docker container for your PHP app, here’s what happens under the hood:
+	
+	1. **Dockerfile instructions executed**
+	
+	   * Docker uses the `Dockerfile` you created in `/backend`.
+	   * It starts from a **PHP + Apache base image**.
+	   * It installs any extra PHP dependencies (like GD) and enables Apache features like `mod_rewrite`.
+	   * It copies **all your PHP app files** from your local `backend` folder into the container’s `/var/www/html`.
+	   * Sets permissions so Apache inside the container can read your files.
+	   * Exposes port 80 (the default HTTP port inside the container).
+	
+	2. **Container runs Apache**
+	
+	   * When you run `docker run -p 8080:80 <image-name>`, Docker maps **container’s port 80** to **your host machine’s port 8080**.
+	   * Apache inside the container serves the PHP files from `/var/www/html`.
+	
+	3. **Accessing `http://localhost:8080`**
+	
+	   * Your browser talks to **localhost:8080**.
+	   * Docker forwards the request to the container’s Apache server.
+	   * Apache serves the `index.php` (or whatever default file you have).
+	
+		○ So what you’re seeing in the browser is **exactly your PHP app running inside the container**, not from XAMPP. 
+		○ That’s why it looks the same, but it’s now fully isolated in Docker.
+
+	• Here’s what’s happening step by step on Docker Desktop:
+		○ **Image (`backend-app`)** – This is your Docker image. Think of it as a **snapshot of your PHP app + Apache setup**. It contains all the files, installed dependencies, and configuration.
+		○ **Container (`suspicious_faraday`)** – This is the **running instance** of your image. The container is what’s actually serving your app on a port (like 8080). You can have multiple containers from the same image.
+		○ So essentially:
+			§ * **Image** = blueprint
+			§ * **Container** = live running app
+
+	• Click on a Container name and there are tabs like- Logs, Inspect, Exec, Files.
+	• There is a Files tab when i click on the container. i went to var/www/html and then i could see the index.php file: 
+		○ Exactly — that’s your app inside the container. ✅
+			§ `var/www/html` is the default directory Apache serves from in the `php:8.1-apache` image.
+			§ The `index.php` you see there is **the one that got copied over when you built the Docker image**.
+			§ Any changes you make locally to your PHP files **won’t automatically reflect** inside the container unless you rebuild the image or mount the folder as a volume.
+	• What does the Exec tab do? i see like a terminal:
+		○ It lets you “exec” commands as if you were logged into the container’s Linux environment.
+		○ You can navigate the filesystem (cd /var/www/html), view files (cat index.php), install packages (if you really needed to), or debug issues.
+		○ Whatever you do here only affects that running container — it doesn’t change your Docker image. If you stop and remove the container, changes made here are lost.
+		○ Think of it like a temporary shell into the container for inspection or testing.

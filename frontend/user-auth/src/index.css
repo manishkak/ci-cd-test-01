@@ -1,0 +1,200 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 24px;
+  flex: 1;
+}
+
+.logout-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #ff5252;
+}
+
+main {
+  padding: 40px 30px;
+}
+
+.form-container {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.form-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+button[type="submit"] {
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 0;
+}
+
+.link-btn:hover {
+  color: #764ba2;
+}
+
+p {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.success {
+  color: #27ae60;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.user-info-container {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.user-info-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.user-details {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 5px;
+  border-left: 4px solid #667eea;
+}
+
+.user-details p {
+  margin: 10px 0;
+  text-align: left;
+  color: #333;
+}
+
+.user-details strong {
+  color: #667eea;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 500px) {
+  .app {
+    border-radius: 0;
+  }
+  
+  header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  header h1 {
+    font-size: 20px;
+  }
+  
+  main {
+    padding: 25px 20px;
+  }
+}
