@@ -2,8 +2,8 @@ FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app
 
-# Copy frontend source (relative path from Dockerfile location)
-COPY ../../frontend/user-auth .
+# Copy frontend source (relative to repo root)
+COPY frontend/user-auth .
 
 # Install dependencies and build
 RUN npm install && npm run build
@@ -21,8 +21,8 @@ RUN docker-php-ext-install pdo_sqlite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy PHP backend code (relative path from Dockerfile location)
-COPY . .
+# Copy PHP backend code (relative to repo root)
+COPY backend/user-auth/ .
 
 # Copy React build from frontend-builder stage to /var/www/html (root)
 COPY --from=frontend-builder /app/dist .
