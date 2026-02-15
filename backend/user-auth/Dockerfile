@@ -10,11 +10,11 @@ RUN docker-php-ext-install pdo_sqlite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy PHP backend code (relative to repo root)
-COPY backend/user-auth/ .
+# Copy PHP backend code (in same directory as Dockerfile)
+COPY . .
 
-# Copy pre-built React frontend (built by Azure Pipeline)
-COPY frontend/user-auth/dist .
+# Copy pre-built React frontend (go up 2 levels to repo root)
+COPY ../../frontend/user-auth/dist .
 
 # Create .htaccess for SPA routing
 RUN echo '<IfModule mod_rewrite.c>\n\
