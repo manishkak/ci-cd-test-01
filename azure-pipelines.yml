@@ -11,30 +11,54 @@ pool:
 
 variables:
   # customize these to match your settings
-  dockerRepo: 'manishkak/backend-app'        # <dockerhub-username/repo>
-  imageTag: 'latest'                         # we push latest + a build id tag below (optional)
-  dockerRegistryServiceConnection: 'DockerHubConnection'   # create this in Project Settings -> Service connections
-  azureSubscription: 'AzureServiceConnection'              # create this in Project Settings -> Service connections
-  appName: 'mkphpapp'              # your Azure Web App name
+  dockerRepoBackend: 'manishkak/backend-app'              # Original backend
+  dockerRepoUserAuth: 'manishkak/user-auth-backend'      # User auth backend
+  imageTag: 'latest'                                      # we push latest + a build id tag below (optional)
+  dockerRegistryServiceConnection: 'DockerHubConnection'  # create this in Project Settings -> Service connections
+  azureSubscription: 'AzureServiceConnection'             # create this in Project Settings -> Service connections
+  appName: 'mkphpapp'                                     # your Azure Web App name for backend-app
+  appNameUserAuth: 'user-auth-app'                        # your Azure Web App name for user-auth (optional)
 
 steps:
 - checkout: self
   persistCredentials: true
 
+# Build and push original backend image
 - task: Docker@2
-  displayName: 'Build and push Docker image to Docker Hub'
+  displayName: 'Build and push backend-app to Docker Hub'
   inputs:
     command: buildAndPush
     containerRegistry: '$(dockerRegistryServiceConnection)'
-    repository: '$(dockerRepo)'
+    repository: '$(dockerRepoBackend)'
     dockerfile: 'backend/Dockerfile'
     tags: |
       $(imageTag)
       $(Build.BuildId)
 
+# Deploy original backend to Azure Web App
 - task: AzureWebAppContainer@1
-  displayName: 'Deploy image to Azure Web App (Container)'
+  displayName: 'Deploy backend-app to Azure Web App'
   inputs:
     azureSubscription: '$(azureSubscription)'
     appName: '$(appName)'
-    imageName: '$(dockerRepo):$(imageTag)'
+    imageName: '$(dockerRepoBackend):$(imageTag)'
+
+# Build and push user-auth backend image
+- task: Docker@2
+  displayName: 'Build and push user-auth-backend to Docker Hub'
+  inputs:
+    command: buildAndPush
+    containerRegistry: '$(dockerRegistryServiceConnection)'
+    repository: '$(dockerRepoUserAuth)'
+    dockerfile: 'backend/user-auth/Dockerfile'
+    tags: |
+      $(imageTag)
+      $(Build.BuildId)
+
+# Deploy user-auth backend to Azure Web App (optional - uncomment if you have the app created)
+# - task: AzureWebAppContainer@1
+#   displayName: 'Deploy user-auth-backend to Azure Web App'
+#   inputs:
+#     azureSubscription: '$(azureSubscription)'
+#     appName: '$(appNameUserAuth)'
+#     imageName: '$(dockerRepoUserAuth):$(imageTag)'
