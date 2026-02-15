@@ -16,8 +16,8 @@ variables:
   imageTag: 'latest'                                      # we push latest + a build id tag below (optional)
   dockerRegistryServiceConnection: 'DockerHubConnection'  # create this in Project Settings -> Service connections
   azureSubscription: 'AzureServiceConnection'             # create this in Project Settings -> Service connections
-  appName: 'mkphpapp'                                     # your Azure Web App name for backend-app
-  appNameUserAuth: 'user-auth-app'                        # your Azure Web App name for user-auth (optional)
+  appName: 'backend-app-webapp'                           # UPDATE: your Azure Web App name for backend-app
+  appNameUserAuth: 'user-auth-app-webapp'                 # UPDATE: your Azure Web App name for user-auth
 
 steps:
 - checkout: self
@@ -36,12 +36,12 @@ steps:
       $(Build.BuildId)
 
 # Deploy original backend to Azure Web App
-# - task: AzureWebAppContainer@1
-#   displayName: 'Deploy backend-app to Azure Web App'
-#   inputs:
-#     azureSubscription: '$(azureSubscription)'
-#     appName: '$(appName)'
-#     imageName: '$(dockerRepoBackend):$(imageTag)'
+- task: AzureWebAppContainer@1
+  displayName: 'Deploy backend-app to Azure Web App'
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    appName: '$(appName)'
+    imageName: '$(dockerRepoBackend):$(imageTag)'
 
 # Build and push user-auth backend image
 - task: Docker@2
@@ -55,10 +55,10 @@ steps:
       $(imageTag)
       $(Build.BuildId)
 
-# Deploy user-auth backend to Azure Web App (optional - uncomment if you have the app created)
-# - task: AzureWebAppContainer@1
-#   displayName: 'Deploy user-auth-backend to Azure Web App'
-#   inputs:
-#     azureSubscription: '$(azureSubscription)'
-#     appName: '$(appNameUserAuth)'
-#     imageName: '$(dockerRepoUserAuth):$(imageTag)'
+# Deploy user-auth backend to Azure Web App
+- task: AzureWebAppContainer@1
+  displayName: 'Deploy user-auth-backend to Azure Web App'
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    appName: '$(appNameUserAuth)'
+    imageName: '$(dockerRepoUserAuth):$(imageTag)'
