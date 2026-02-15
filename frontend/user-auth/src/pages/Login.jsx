@@ -16,7 +16,7 @@ function Login({ onLoginSuccess }) {
     e.preventDefault()
     
     try {
-      const response = await fetch('/api?action=login', {
+      const response = await fetch('/api.php?action=login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

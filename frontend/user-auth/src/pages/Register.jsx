@@ -18,7 +18,7 @@ function Register({ onRegisterSuccess }) {
     e.preventDefault()
     
     try {
-      const response = await fetch('/api?action=register', {
+      const response = await fetch('/api.php?action=register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

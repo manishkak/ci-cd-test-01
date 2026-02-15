@@ -7,7 +7,7 @@ function UserInfo() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch('/api?action=user-info')
+        const response = await fetch('/api.php?action=user-info')
         const data = await response.json()
         
         if (response.ok) {

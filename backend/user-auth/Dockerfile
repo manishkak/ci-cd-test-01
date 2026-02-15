@@ -21,27 +21,28 @@ RUN docker-php-ext-install pdo_sqlite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy PHP backend code
-COPY . .
+# Copy PHP backend code (only backend/user-auth files)
+COPY backend/user-auth/ .
 
-# Copy React build from frontend-builder stage
-COPY --from=frontend-builder /app/dist ./frontend
+# Copy React build from frontend-builder stage to /var/www/html (root)
+COPY --from=frontend-builder /app/dist .
 
 # Create .htaccess for SPA routing
 RUN echo '<IfModule mod_rewrite.c>\n\
   RewriteEngine On\n\
-  # Serve frontend files directly\n\
+  # Don'\''t rewrite actual files and directories\n\
   RewriteCond %{REQUEST_FILENAME} -f [OR]\n\
   RewriteCond %{REQUEST_FILENAME} -d\n\
   RewriteRule ^ - [L]\n\
-  # Route all other requests to index.html for SPA (except API)\n\
-  RewriteCond %{REQUEST_URI} !^/api\n\
-  RewriteCond %{REQUEST_URI} !^/index.php\n\
-  RewriteRule ^(.*)$ /frontend/index.html [L]\n\
+  # Don'\''t rewrite api.php\n\
+  RewriteCond %{REQUEST_URI} ^/api.php\n\
+  RewriteRule ^ - [L]\n\
+  # Everything else goes to index.html (SPA)\n\
+  RewriteRule ^(.*)$ /index.html [L]\n\
 </IfModule>' > /var/www/html/.htaccess
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html && chmod 644 /var/www/html/.htaccess
 
 # Expose port 80
 EXPOSE 80
