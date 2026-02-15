@@ -35,6 +35,10 @@ steps:
     npm run build
   displayName: 'Build React frontend'
 
+- script: |
+    cp -r frontend/user-auth/dist backend/user-auth/dist
+  displayName: 'Copy React build to backend directory'
+
 # Build and push original backend image
 - task: Docker@2
   displayName: 'Build and push backend-app to Docker Hub'

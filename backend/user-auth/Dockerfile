@@ -13,8 +13,8 @@ WORKDIR /var/www/html
 # Copy PHP backend code (in same directory as Dockerfile)
 COPY . .
 
-# Copy pre-built React frontend (go up 2 levels to repo root)
-COPY ../../frontend/user-auth/dist .
+# Copy pre-built React frontend (should be copied here by Azure Pipeline)
+COPY dist .
 
 # Create .htaccess for SPA routing
 RUN echo '<IfModule mod_rewrite.c>\n\
