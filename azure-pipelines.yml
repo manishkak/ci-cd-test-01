@@ -23,6 +23,18 @@ steps:
 - checkout: self
   persistCredentials: true
 
+# Build React frontend for user-auth
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd frontend/user-auth
+    npm install
+    npm run build
+  displayName: 'Build React frontend'
+
 # Build and push original backend image
 - task: Docker@2
   displayName: 'Build and push backend-app to Docker Hub'

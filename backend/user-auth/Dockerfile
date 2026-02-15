@@ -1,14 +1,3 @@
-FROM node:18-alpine AS frontend-builder
-
-WORKDIR /app
-
-# Copy frontend source (relative to repo root)
-COPY frontend/user-auth .
-
-# Install dependencies and build
-RUN npm install && npm run build
-
-# Final stage - PHP + Apache
 FROM php:8.2-apache
 
 # Enable mod_rewrite for URL rewriting
@@ -24,8 +13,8 @@ WORKDIR /var/www/html
 # Copy PHP backend code (relative to repo root)
 COPY backend/user-auth/ .
 
-# Copy React build from frontend-builder stage to /var/www/html (root)
-COPY --from=frontend-builder /app/dist .
+# Copy pre-built React frontend (built by Azure Pipeline)
+COPY frontend/user-auth/dist .
 
 # Create .htaccess for SPA routing
 RUN echo '<IfModule mod_rewrite.c>\n\
